@@ -1,0 +1,31 @@
+{
+  "name": "blinkt",
+  "version": "0.1.0",
+  "description": "Module for interacting with the Raspberry Pi Blinkt! addon",
+  "homepage": "https://github.com/NotNinja/node-blinkt",
+  "bugs": {
+    "url": "https://github.com/NotNinja/node-blinkt/issues"
+  },
+  "author": {
+    "name": "Alasdair Mercer",
+    "email": "mercer.alasdair@gmail.com",
+    "url": "https://not.ninja"
+  },
+  "license": "MIT",
+  "keywords": [
+    "raspberry",
+    "pi",
+    "gpio",
+    "blinkt",
+    "led",
+    "rgb"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NotNinja/node-blinkt.git"
+  },
+  "dependencies": {
+    "rpio": "^0.9.16"
+  },
+  "main": "src/blinkt.js"
+}
