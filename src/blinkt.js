@@ -195,11 +195,11 @@ function eof() {
    * Emit exactly enough clock pulses to latch the small dark die APA102s which are weird for some reason it takes 36
    * clocks, the other IC takes just 4 (number of pixels/2).
    */
-  rpio.write(DAT, 0);
+  rpio.write(DAT, rpio.LOW);
 
   for (var i = 0; i < 36; i++) {
-    rpio.write(CLK, 1);
-    rpio.write(CLK, 0);
+    rpio.write(CLK, rpio.HIGH);
+    rpio.write(CLK, rpio.LOW);
   }
 }
 
@@ -222,13 +222,11 @@ function setPixelInternal(index, red, green, blue, brightness) {
 }
 
 function sof() {
-  var pulses = NUM_PIXELS * NUM_PIXELS / 2;
-
-  rpio.write(DAT, 0);
+  rpio.write(DAT, rpio.LOW);
 
   for (var i = 0; i < 32; i++) {
-    rpio.write(CLK, 1);
-    rpio.write(CLK, 0);
+    rpio.write(CLK, rpio.HIGH);
+    rpio.write(CLK, rpio.LOW);
   }
 }
 
@@ -267,11 +265,11 @@ function validateRGB(red, green, blue) {
 }
 
 function writeByte(byte) {
-  for (var i = 0; i < NUM_PIXELS; i++) {
+  for (var i = 0; i < 8; i++) {
     rpio.write(DAT, byte & 0x80);
-    rpio.write(CLK, 1);
+    rpio.write(CLK, rpio.HIGH);
     byte <<= 1;
-    rpio.write(CLK, 0);
+    rpio.write(CLK, rpio.LOW);
   }
 }
 
