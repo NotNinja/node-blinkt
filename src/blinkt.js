@@ -31,7 +31,7 @@ var Gpio = require('onoff').Gpio;
  * @public
  * @type {number}
  */
-var NUM_PIXELS = exports.NUM_PIXELS = 8;
+var NUM_PIXELS = 8;
 
 var clearOnExit = true;
 var pixels = (function() {
@@ -51,11 +51,11 @@ var clk, dat;
  * @return {void}
  * @public
  */
-exports.clear = function clear() {
+function clear() {
   for (var i = 0; i < NUM_PIXELS; i++) {
     pixels[i].splice(0, 3, 0, 0, 0);
   }
-};
+}
 
 /**
  * Gets the RGB and brightness values of the pixel at the <code>index</code>
@@ -67,14 +67,14 @@ exports.clear = function clear() {
  * @throws {TypeError} If <code>index</code> is <code>null</code> or not a number.
  * @public
  */
-exports.getPixel = function getPixel(index) {
+function getPixel(index) {
   validateIndex(index);
 
   var pixel = pixels[index].slice();
   pixel[3] = (pixel[3] / 31).toPrecision(3);
 
   return pixel;
-};
+}
 
 /**
  * Sets the specified RGB values, and optionally <code>brightness</code>, of all pixels.
@@ -91,14 +91,14 @@ exports.getPixel = function getPixel(index) {
  * @throws {TypeError} If any color is <code>null</code> or not a number, or <code>brightness</code> is not a number.
  * @public
  */
-exports.setAll = function setAll(red, green, blue, brightness) {
+function setAll(red, green, blue, brightness) {
   validateRGB(red, green, blue);
   validateBrightness(brightness, true);
 
   for (var i = 0; i < NUM_PIXELS; i++) {
     setPixelInternal(i, red, green, blue, brightness);
   }
-};
+}
 
 /**
  * Sets the brightness of all pixels to <code>brightness</code>.
@@ -109,13 +109,13 @@ exports.setAll = function setAll(red, green, blue, brightness) {
  * @throws {TypeError} If <code>brightness</code> is <code>null</code> or not a number.
  * @public
  */
-exports.setBrightness = function setBrightness(brightness) {
+function setBrightness(brightness) {
   validateBrightness(brightness, false);
 
   for (var i = 0; i < NUM_PIXELS; i++) {
     pixels[i][3] = toBrightnessValue(brightness);
   }
-};
+}
 
 /**
  * Sets whether Blinkt! should be cleared upon exit.
@@ -127,9 +127,9 @@ exports.setBrightness = function setBrightness(brightness) {
  * @return {void}
  * @public
  */
-exports.setClearOnExit = function setClearOnExit(value) {
+function setClearOnExit(value) {
   clearOnExit = value == null || value === true;
-};
+}
 
 /**
  * Sets the specified RGB values, and optionally <code>brightness</code>, of the pixel at the <code>index</code>
@@ -149,13 +149,13 @@ exports.setClearOnExit = function setClearOnExit(value) {
  * <code>brightness</code> is not a number.
  * @public
  */
-exports.setPixel = function setPixel(index, red, green, blue, brightness) {
+function setPixel(index, red, green, blue, brightness) {
   validateIndex(index);
   validateRGB(red, green, blue);
   validateBrightness(brightness, true);
 
   setPixelInternal(index, red, green, blue, brightness);
-};
+}
 
 /**
  * Outputs the buffer to Blinkt!
@@ -163,7 +163,7 @@ exports.setPixel = function setPixel(index, red, green, blue, brightness) {
  * @return {void}
  * @public
  */
-exports.show = function show() {
+function show() {
   if (dat == null && clk == null) {
     dat = new Gpio(23, 'out');
     clk = new Gpio(24, 'out');
@@ -183,7 +183,7 @@ exports.show = function show() {
   }
 
   eof();
-};
+}
 
 function cleanup() {
   dat.unexport();
@@ -274,3 +274,14 @@ function writeByte(byte) {
 }
 
 exitHook(exit);
+
+module.exports = {
+  NUM_PIXELS: NUM_PIXELS,
+  clear: clear,
+  getPixel: getPixel,
+  setAll: setAll,
+  setBrightness: setBrightness,
+  setClearOnExit: setClearOnExit,
+  setPixel: setPixel,
+  show: show
+};
