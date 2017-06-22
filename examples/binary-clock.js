@@ -69,7 +69,7 @@ setInterval(function() {
     blinkt.setPixel(0, 255, 0, 0);
 
     for (i = 0; i < 6; i++) {
-      bit = (h & (1 << x)) > 0;
+      bit = (h & (1 << i)) > 0;
       r = 128 * bit;
       g = 128 * bit;
       b = 128 * bit;
@@ -82,7 +82,7 @@ setInterval(function() {
     blinkt.setPixel(0, 0, 255, 0);
 
     for (i = 0; i < 6; i++) {
-      bit = (m & (1 << x)) > 0;
+      bit = (m & (1 << i)) > 0;
       r = 128 * bit;
       g = 128 * bit;
       b = 128 * bit;
@@ -95,7 +95,7 @@ setInterval(function() {
     blinkt.setPixel(0, 0, 0, 255);
 
     for (i = 0; i < 6; i++) {
-      bit = (s & (1 << x)) > 0;
+      bit = (s & (1 << i)) > 0;
       r = 128 * bit;
       g = 128 * bit;
       b = 128 * bit;
