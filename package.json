@@ -25,6 +25,7 @@
     "url": "https://github.com/NotNinja/node-blinkt.git"
   },
   "dependencies": {
+    "async": "^2.4.1",
     "exit-hook": "^1.1.1",
     "onoff": "^1.1.3"
   },

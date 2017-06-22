@@ -22,6 +22,7 @@
 
 'use strict';
 
+var async = require('async');
 var exitHook = require('exit-hook');
 var Gpio = require('onoff').Gpio;
 
@@ -160,29 +161,30 @@ function setPixel(index, red, green, blue, brightness) {
 /**
  * Outputs the buffer to Blinkt!
  *
+ * @param {Function} callback - the callback function to be called once the pixels have been shown
  * @return {void}
  * @public
  */
-function show() {
+function show(callback) {
   if (dat == null && clk == null) {
     dat = new Gpio(23, 'out');
     clk = new Gpio(24, 'out');
   }
 
-  sof();
-
-  var pixel;
-
-  for (var i = 0, length = pixels.length; i < length; i++) {
-    pixel = pixels[i];
-
-    writeByte(0xe0 | pixel[3]);
-    writeByte(pixel[2]);
-    writeByte(pixel[1]);
-    writeByte(pixel[0]);
-  }
-
-  eof();
+  async.series([
+    sof,
+    function(next) {
+      async.eachSeries(pixels, function(pixel, done) {
+        async.series([
+          async.apply(writeByte, 0xe0 | pixel[3]),
+          async.apply(writeByte, pixel[2]),
+          async.apply(writeByte, pixel[1]),
+          async.apply(writeByte, pixel[0])
+        ], done);
+      }, next);
+    },
+    eof
+  ], callback);
 }
 
 function cleanup() {
@@ -190,17 +192,22 @@ function cleanup() {
   clk.unexport();
 }
 
-function eof() {
+function eof(callback) {
   /*
    * Emit exactly enough clock pulses to latch the small dark die APA102s which are weird for some reason it takes 36
    * clocks, the other IC takes just 4 (number of pixels/2).
    */
-  dat.writeSync(0);
-
-  for (var i = 0; i < 36; i++) {
-    clk.writeSync(1);
-    clk.writeSync(0);
-  }
+  async.series([
+    async.apply(dat.write, 0),
+    function(next) {
+      async.timesSeries(36, function(i, done) {
+        async.series([
+          async.apply(clk.write, 1),
+          async.apply(clk.write, 0)
+        ], done);
+      }, next);
+    }
+  ], callback);
 }
 
 function exit() {
@@ -221,13 +228,18 @@ function setPixelInternal(index, red, green, blue, brightness) {
   ];
 }
 
-function sof() {
-  dat.writeSync(0);
-
-  for (var i = 0; i < 32; i++) {
-    clk.writeSync(1);
-    clk.writeSync(0);
-  }
+function sof(callback) {
+  async.series([
+    async.apply(dat.write, 0),
+    function(next) {
+      async.timesSeries(32, function(i, done) {
+        async.series([
+          async.apply(clk.write, 1),
+          async.apply(clk.write, 0)
+        ], done);
+      }, next);
+    }
+  ], callback);
 }
 
 function toBrightnessValue(brightness) {
@@ -264,13 +276,16 @@ function validateRGB(red, green, blue) {
   validateInput('blue', blue, 0, 255, false);
 }
 
-function writeByte(byte) {
-  for (var i = 0; i < 8; i++) {
-    dat.writeSync(byte & 0x80 ? 1 : 0);
-    clk.writeSync(1);
+function writeByte(byte, callback) {
+  async.timesSeries(8, function(i, next) {
+    async.series([
+      async.apply(dat.write, byte & 0x80 ? 1 : 0),
+      async.apply(clk.write, 1),
+      async.apply(clk.write, 0)
+    ], next);
+
     byte <<= 1;
-    clk.writeSync(0);
-  }
+  }, callback);
 }
 
 exitHook(exit);

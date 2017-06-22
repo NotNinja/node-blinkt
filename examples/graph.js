@@ -24,12 +24,14 @@
 
 'use strict';
 
+var async = require('async');
+
 var blinkt = require('../src/blinkt');
 
 blinkt.setClearOnExit();
 blinkt.setBrightness(0.1);
 
-function showGraph(value, red, green, blue) {
+function showGraph(value, red, green, blue, callback) {
   value *= blinkt.NUM_PIXELS;
 
   for (var i = 0; i < blinkt.NUM_PIXELS; i++) {
@@ -46,13 +48,28 @@ function showGraph(value, red, green, blue) {
     value--;
   }
 
-  blinkt.show();
+  blinkt.show(callback);
 }
 
-setInterval(function() {
-  // Get a value between 0 and 1
-  var time = Date.now();
-  var value = (Math.sin(time) + 1) / 2;
+async.whilst(
+  function() {
+    return true;
+  },
+  function(next) {
+    async.series([
+      function(done) {
+        // Get a value between 0 and 1
+        var time = Date.now();
+        var value = (Math.sin(time) + 1) / 2;
 
-  showGraph(value, 255, 0, 255);
-}, 100);
+        showGraph(value, 255, 0, 255);
+      },
+      async.apply(setTimeout, 100)
+    ], next);
+  },
+  function(error) {
+    if (error) {
+      throw error;
+    }
+  }
+);

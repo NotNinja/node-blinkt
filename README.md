@@ -75,8 +75,12 @@ None of your pixels will appear on Blinkt! until you `show()` them. This method 
 device.
 
 ``` javascript
-blinkt.show()
+blinkt.show(callback)
 ```
+
+| Parameter  | Description                                                        | Required |
+| ---------- | ------------------------------------------------------------------ | -------- |
+| callback   | The callback function to be called once the pixels have been shown | Yes      |
 
 ### Clear
 
