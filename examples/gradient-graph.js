@@ -82,16 +82,16 @@ function convertHsvToRgb(h, s, v) {
 }
 
 function showGraph(value, red, green, blue) {
-  var brightness, rgb;
+  var brightness, hue, rgb;
 
   value *= blinkt.NUM_PIXELS;
 
   for (var i = 0; i < blinkt.NUM_PIXELS; i++) {
     hue = ((hueStart + ((i / blinkt.NUM_PIXELS) * hueRange)) % 360) / 360;
     rgb = convertHsvToRgb(hue, 1, 1);
-    red = Math.floor(rgb[0] * 255);
-    green = Math.floor(rgb[1] * 255);
-    blue = Math.floor(rgb[2] * 255);
+    red = Math.floor(rgb[0]);
+    green = Math.floor(rgb[1]);
+    blue = Math.floor(rgb[2]);
 
     if (value < 0) {
       brightness = 0;
@@ -113,4 +113,4 @@ setInterval(function() {
   var value = (Math.sin(time) + 1) / 2;
 
   showGraph(value, 255, 0, 255);
-}, 10);
+}, 100);
