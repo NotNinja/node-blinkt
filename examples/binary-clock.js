@@ -44,7 +44,7 @@ setInterval(function() {
   var h = t.getHours();
   var m = t.getMinutes();
   var s = t.getSeconds();
-  var b, bit, g, r;
+  var b, bit, g, i, r;
 
   console.log([ h, m, s, mode, timeInMode ]);
 
