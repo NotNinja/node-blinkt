@@ -33,7 +33,7 @@ var pixels = (function() {
   var results = [];
 
   for (var i = 0; i < NUM_PIXELS; i++) {
-    resultss.push([ 0, 0, 0, BRIGHTNESS ]);
+    results.push([ 0, 0, 0, BRIGHTNESS ]);
   }
 
   return results;
