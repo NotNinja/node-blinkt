@@ -213,10 +213,10 @@ function eof(callback) {
 function exit() {
   if (clearOnExit) {
     clear();
-    show();
+    show(cleanup);
+  } else {
+    cleanup();
   }
-
-  cleanup();
 }
 
 function setPixelInternal(index, red, green, blue, brightness) {
