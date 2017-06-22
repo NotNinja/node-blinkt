@@ -62,7 +62,7 @@ async.whilst(
         var time = Date.now();
         var value = (Math.sin(time) + 1) / 2;
 
-        showGraph(value, 255, 0, 255);
+        showGraph(value, 255, 0, 255, done);
       },
       async.apply(setTimeout, 100)
     ], next);
