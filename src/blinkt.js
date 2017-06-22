@@ -71,7 +71,7 @@ function getPixel(index) {
   validateIndex(index);
 
   var pixel = pixels[index].slice();
-  pixel[3] = (pixel[3] / 31).toPrecision(3);
+  pixel[3] = parseFloat((pixel[3] / 31).toPrecision(3));
 
   return pixel;
 }
