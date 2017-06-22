@@ -198,12 +198,12 @@ function eof(callback) {
    * clocks, the other IC takes just 4 (number of pixels/2).
    */
   async.series([
-    async.apply(dat.write, 0),
+    dat.write.bind(dat, 0),
     function(next) {
       async.timesSeries(36, function(i, done) {
         async.series([
-          async.apply(clk.write, 1),
-          async.apply(clk.write, 0)
+          clk.write.bind(clk, 1),
+          clk.write.bind(clk, 0)
         ], done);
       }, next);
     }
@@ -230,12 +230,12 @@ function setPixelInternal(index, red, green, blue, brightness) {
 
 function sof(callback) {
   async.series([
-    async.apply(dat.write, 0),
+    dat.write.bind(dat, 0),
     function(next) {
       async.timesSeries(32, function(i, done) {
         async.series([
-          async.apply(clk.write, 1),
-          async.apply(clk.write, 0)
+          clk.write.bind(clk, 1),
+          clk.write.bind(clk, 0)
         ], done);
       }, next);
     }
@@ -279,9 +279,9 @@ function validateRGB(red, green, blue) {
 function writeByte(byte, callback) {
   async.timesSeries(8, function(i, next) {
     async.series([
-      async.apply(dat.write, byte & 0x80 ? 1 : 0),
-      async.apply(clk.write, 1),
-      async.apply(clk.write, 0)
+      dat.write.bind(dat, byte & 0x80 ? 1 : 0),
+      clk.write.bind(clk, 1),
+      clk.write.bind(clk, 0)
     ], next);
 
     byte <<= 1;
