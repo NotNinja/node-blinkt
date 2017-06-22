@@ -255,7 +255,7 @@ function validateInput(name, value, min, max, nullable) {
     }
   } else if (typeof value !== 'number' || value !== +value) {
     throw new TypeError(name + ' must be a number but was ' + value);
-  } else if (value < 0 || value > 1) {
+  } else if (value < min || value > max) {
     throw new RangeError(name + ' must be between ' + min + ' and ' + max + ' (inclusive) but was ' + value);
   }
 }
