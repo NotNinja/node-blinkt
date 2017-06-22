@@ -24,9 +24,15 @@
 
 var rpio = require('rpio');
 
+/**
+ * The number of pixels.
+ *
+ * @public
+ * @type {number}
+ */
+var NUM_PIXELS = exports.NUM_PIXELS = 8;
 var DAT = 23;
 var CLK = 24;
-var NUM_PIXELS = 8;
 var BRIGHTNESS = 7;
 
 var pixels = (function() {
