@@ -36,37 +36,34 @@ var cpuInfo = getCpuInfo();
 function getCpuInfo() {
   var cpus = os.cpus();
   var idle = 0;
-  var irq = 0;
-  var nice = 0;
-  var sys = 0;
-  var user = 0;
+  var used = 0;
   var cpu;
 
   for (var i = 0, length = cpus.length; i < length; i++) {
     cpu = cpus[i];
 
     idle += cpu.times.idle;
-    irq += cpu.times.irq;
-    nice += cpu.times.nice;
-    sys += cpu.times.sys;
-    user += cpu.times.user;
+    used += cpu.times.irq;
+    used += cpu.times.nice;
+    used += cpu.times.sys;
+    used += cpu.times.user;
   }
 
   return {
     idle: idle,
-    total: idle + irq + nice + sys + user
+    used: used
   };
 }
 
 function getCpuUsage() {
   var currentCpuInfo = getCpuInfo();
-  var idle = currentCpuInfo.idle - cpuInfo.idle;
-  var total = currentCpuInfo.total - cpuInfo.total;
-  var usage = idle / total;
+  var idleDiff = currentCpuInfo.idle - cpuInfo.idle;
+  var usedDiff = currentCpuInfo.used - cpuInfo.used;
+  var usage = (usedDiff / (usedDiff + idleDiff)) * 100;
 
   cpuInfo = currentCpuInfo;
 
-  return 1 - usage;
+  return usage;
 }
 
 function showGraph(value, red, green, blue) {
@@ -81,6 +78,8 @@ function showGraph(value, red, green, blue) {
       blue = Math.floor(Math.min(value, 1) * blue);
     }
 
+    blinkt.setPixel(i, red, green, blue);
+
     value--;
   }
 
@@ -91,4 +90,4 @@ setInterval(function() {
   var value = getCpuUsage() / 100;
 
   showGraph(value, 255, 255, 255);
-}, 1000);
+}, 100);
