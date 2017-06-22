@@ -272,7 +272,7 @@ function validateRGB(red, green, blue) {
 
 function writeByte(byte) {
   for (var i = 0; i < 8; i++) {
-    rpio.write(DAT, byte & 0x80);
+    rpio.write(DAT, byte & 0x80 ? rpio.HIGH : rpio.LOW);
     rpio.write(CLK, rpio.HIGH);
     byte <<= 1;
     rpio.write(CLK, rpio.LOW);
