@@ -25,7 +25,7 @@
     "url": "https://github.com/NotNinja/node-blinkt.git"
   },
   "dependencies": {
-    "rpio": "^0.9.16"
+    "onoff": "^1.1.3"
   },
   "main": "src/blinkt.js"
 }

@@ -22,25 +22,27 @@
 
 'use strict';
 
-var rpio = require('rpio');
+var Gpio = require('onoff').Gpio;
 
-var DAT = 23;
-var CLK = 24;
-var NUM_PIXELS = 8;
-var BRIGHTNESS = 7;
+/**
+ * The number of pixels.
+ *
+ * @public
+ * @type {number}
+ */
+var NUM_PIXELS = exports.NUM_PIXELS = 8;
 
+var clearOnExit = true;
 var pixels = (function() {
   var results = [];
 
   for (var i = 0; i < NUM_PIXELS; i++) {
-    results.push([ 0, 0, 0, BRIGHTNESS ]);
+    results.push([ 0, 0, 0, 7 ]);
   }
 
   return results;
 }());
-
-var clearOnExit = true;
-var gpioSetup = false;
+var clk, dat;
 
 /**
  * Clears the pixel buffer.
@@ -161,12 +163,9 @@ exports.setPixel = function setPixel(index, red, green, blue, brightness) {
  * @public
  */
 exports.show = function show() {
-  if (!gpioSetup) {
-    rpio.init();
-    rpio.open(DAT, rpio.OUTPUT);
-    rpio.open(CLK, rpio.OUTPUT);
-
-    gpioSetup = true;
+  if (dat == null && clk == null) {
+    dat = new Gpio(23, 'out');
+    clk = new Gpio(24, 'out');
   }
 
   sof();
@@ -186,8 +185,8 @@ exports.show = function show() {
 };
 
 function cleanup() {
-  rpio.close(DAT);
-  rpio.close(CLK);
+  dat.unexport();
+  clk.unexport();
 }
 
 function eof() {
@@ -195,11 +194,11 @@ function eof() {
    * Emit exactly enough clock pulses to latch the small dark die APA102s which are weird for some reason it takes 36
    * clocks, the other IC takes just 4 (number of pixels/2).
    */
-  rpio.write(DAT, rpio.LOW);
+  dat.writeSync(0);
 
   for (var i = 0; i < 36; i++) {
-    rpio.write(CLK, rpio.HIGH);
-    rpio.write(CLK, rpio.LOW);
+    clk.writeSync(1);
+    clk.writeSync(0);
   }
 }
 
@@ -222,11 +221,11 @@ function setPixelInternal(index, red, green, blue, brightness) {
 }
 
 function sof() {
-  rpio.write(DAT, rpio.LOW);
+  dat.writeSync(0);
 
   for (var i = 0; i < 32; i++) {
-    rpio.write(CLK, rpio.HIGH);
-    rpio.write(CLK, rpio.LOW);
+    clk.writeSync(1);
+    clk.writeSync(0);
   }
 }
 
@@ -266,10 +265,10 @@ function validateRGB(red, green, blue) {
 
 function writeByte(byte) {
   for (var i = 0; i < 8; i++) {
-    rpio.write(DAT, byte & 0x80);
-    rpio.write(CLK, rpio.HIGH);
+    dat.writeSync(byte & 0x80);
+    clk.writeSync(1);
     byte <<= 1;
-    rpio.write(CLK, rpio.LOW);
+    clk.writeSync(0);
   }
 }
 
