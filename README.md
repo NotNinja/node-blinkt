@@ -80,7 +80,7 @@ blinkt.show(callback)
 
 | Parameter  | Description                                                        | Required |
 | ---------- | ------------------------------------------------------------------ | -------- |
-| callback   | The callback function to be called once the pixels have been shown | Yes      |
+| callback   | The callback function to be called once the pixels have been shown | No       |
 
 ### Clear
 

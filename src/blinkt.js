@@ -161,7 +161,7 @@ function setPixel(index, red, green, blue, brightness) {
 /**
  * Outputs the buffer to Blinkt!
  *
- * @param {Function} callback - the callback function to be called once the pixels have been shown
+ * @param {Function} [callback] - the callback function to be called once the pixels have been shown
  * @return {void}
  * @public
  */
