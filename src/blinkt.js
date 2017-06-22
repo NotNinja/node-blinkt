@@ -22,6 +22,7 @@
 
 'use strict';
 
+var exitHook = require('exit-hook');
 var Gpio = require('onoff').Gpio;
 
 /**
@@ -272,4 +273,4 @@ function writeByte(byte) {
   }
 }
 
-process.on('exit', exit);
+exitHook(exit);
