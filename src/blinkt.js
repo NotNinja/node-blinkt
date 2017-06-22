@@ -265,7 +265,7 @@ function validateRGB(red, green, blue) {
 
 function writeByte(byte) {
   for (var i = 0; i < 8; i++) {
-    dat.writeSync(byte & 0x80);
+    dat.writeSync(byte & 0x80 ? 1 : 0);
     clk.writeSync(1);
     byte <<= 1;
     clk.writeSync(0);
