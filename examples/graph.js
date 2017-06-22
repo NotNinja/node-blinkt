@@ -64,7 +64,9 @@ async.whilst(
 
         showGraph(value, 255, 0, 255, done);
       },
-      async.apply(setTimeout, 100)
+      function(done) {
+        setTimeout(done, 10);
+      }
     ], next);
   },
   function(error) {
