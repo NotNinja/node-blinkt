@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "exit-hook": "^1.1.1",
-    "onoff": "^1.1.3"
+    "onoff": "^1.1.7"
   },
   "main": "src/blinkt.js"
 }
